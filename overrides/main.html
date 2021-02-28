@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  <script async src="//cdn.jsdelivr.net/npm/pwacompat" crossorigin="anonymous"></script>
+  <link rel="icon" type="image/png" href="images/favicon.png" sizes="128x128" />
+{% endblock %}
+
+{% block content %}
+  {{ super() }}
+
+  <div>
+    {% if git_page_authors %}
+      <small>
+        작성한 사람: {{ git_page_authors | default('enable mkdocs-git-authors-plugin') }}
+      </small>
+    {% endif %}
+  </div>
+{% endblock %}

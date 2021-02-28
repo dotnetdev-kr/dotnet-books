@@ -1,0 +1,48 @@
+name: Publish Branch
+
+# 추후 릴리스 버전 관리를 하게 될 경우 트리거 조건을 다음의 내용으로 바꾸어서 사용하도록 합니다.
+#on:
+#  workflow_dispatch:
+#  push:
+#    tags:
+#      - 'release-*.*.*'
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master, main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  publish:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Setting-up Python runtime
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.1
+      
+      # Upgrade pip
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      # Install requirements
+      - name: Pip Installer
+        uses: BSFishy/pip-action@v1
+        with:
+          requirements: requirements.txt
+
+      # Run mkdocs publish procedure
+      - name: Run mkdocs publish procedure
+        run: |
+          pwd
+          ls -al ./
+          git fetch
+          mkdocs gh-deploy -b published

@@ -1,0 +1,6 @@
+mkdocs
+mkdocs-material
+mkdocs-macros-plugin
+git+https://github.com/jldiaz/mkdocs-plugin-tags
+mkdocs-git-revision-date-localized-plugin
+mkdocs-git-authors-plugin

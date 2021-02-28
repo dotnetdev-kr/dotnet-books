@@ -1,0 +1,42 @@
+site_name: "mkdocs 기반 문서화 사이트 예제"
+theme:
+  name: material
+  custom_dir: overrides
+  language: kr
+  palette:
+    primary: "deep orange"
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.instant
+    - navigation.tabs
+    - search.suggest
+extra:
+  manifest: manifest.webmanifest
+markdown_extensions:
+  - admonition
+  - pymdownx.arithmatex
+  - pymdownx.betterem
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.keys
+  - pymdownx.tabbed
+  - pymdownx.superfences
+  - markdown.extensions.footnotes
+  - markdown.extensions.attr_list
+  - markdown.extensions.def_list
+  - markdown.extensions.tables
+  - markdown.extensions.abbr
+  - markdown.extensions.md_in_html
+plugins:
+  - search:
+      prebuild_index: true
+  - git-revision-date-localized:
+      type: timeago
+      timezone: Asia/Seoul
+      locale: ko
+      fallback_to_build_date: false
+  - git-authors  
+  - macros
+copyright: |
+  <strong>&copy; 2021 <a href="https://dotnetdev.kr/" target="_blank">.NET DEV</a>, All rights reserved.</strong>
