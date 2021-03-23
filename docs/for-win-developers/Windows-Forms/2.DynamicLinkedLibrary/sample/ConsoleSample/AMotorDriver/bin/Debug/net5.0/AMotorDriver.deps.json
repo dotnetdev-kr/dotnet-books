@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "AMotorDriver/1.0.0": {
+        "dependencies": {
+          "MotorDriver": "1.0.0"
+        },
+        "runtime": {
+          "AMotorDriver.dll": {}
+        }
+      },
+      "MotorDriver/1.0.0": {
+        "runtime": {
+          "MotorDriver.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AMotorDriver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MotorDriver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -13,5 +13,5 @@
 - 열거형과 어트리뷰트를 이용한 전략패턴 만들어보기
 - 유닛테스트 사용해보기 (xunit, nunit)
 - 디자인 타임을 사용하지 않고 윈폼 개발
-- 팩토리, 아답터 패턴을 이용한 DLL 동적 로딩
+- (작업중)[디자인패턴을 이용한 DLL 동적 로딩](Windows-Forms/2.DynamicLinkedLibrary/index.md)
 - StringTable (resx)를 쓰는 `다국어 지원`
