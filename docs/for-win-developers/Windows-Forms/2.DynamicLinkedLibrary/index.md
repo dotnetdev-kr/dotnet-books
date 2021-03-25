@@ -21,7 +21,11 @@
 var assembly = Assembly.LoadFrom(assemblyPath);
 ```
 
-위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadContext`를 이용하는게 좋습니다. `AssemblyLoadContext`를 상속받아,
+위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadContext`를 이용하는게 좋습니다. `AssemblyLoadContext`를 이용해 언로드 기능을 사용하기 위해 다음의 글을 참고하세요.
+
+> [.NET Core에서 어셈블리 언로드 기능을 사용하고 디버그하는 방법](https://docs.microsoft.com/ko-kr/dotnet/standard/assembly/unloadability)
+
+`AssemblyLoadContext`를 상속받아 적절히 구현한 후,
 
 ```csharp
 var assembly = myAssemblyLoadContext.LoadFromAssemblyPath(assemblypath);
@@ -211,7 +215,101 @@ await motor2.MoveAsync(20);
 ### 실행화면
 ![실행화면](images/2.png)
 
+## Windows Forms에도 DLL에서 동적으로 화면을 가져올 수 있을까요?
+당연히 가능합니다. UI 어플리케이션에서 플러그인을 추가하면 설정메뉴에서 해당 플러그인의 설정이 추가된다던가, 플러그인에서 제공하면 화면이 추가된다던가 하는것을 보셨을 텐데요, 원리는 위의 콘솔 예제와 동일합니다.
+
+`UserControl` 형태로 플러그인에서 화면을 만들고, 콘솔 예제와 동일한 팩토리패턴을 이용해 본 어플리케이션에서 인스턴스를 생성할 수 있게 해주면 되는데요, 위의 예제를 수정해서 간단히 구현해보도록 합시다.
+
+코드가 중복되므로 중요 내용만 보도록 합시다.
+
+### 화면구성
+![화면구성](images/3.png)
+`플러그인 로딩` 버튼을 클릭하면 왼쪽과 오른쪽 패널에 각각 로딩된 페이지가 표시되도록 구성합니다.
+
+`AMotorPage`는 간단히 라벨로 표현했습니다.
+
+![AMotorPage](images/4.png)
+
+`BMotorPage`도 간단히 라벨로 표현했습니다.
+
+![BMotorPage](images/5.png)
+
+`MotorPageFactor`및 `IMotorPage` 인터페이스
+```csharp
+    /// <summary>
+    /// IMotorPage 인스턴스를 생성하는 팩토리 인터페이스
+    /// </summary>
+    public interface IMotorPageFactory
+    {
+        string DriverName { get; }
+
+        IMotorPage Create(int id);
+    }
+
+    /// <summary>
+    /// MotorDriver 인터페이스
+    /// </summary>
+    public interface IMotorPage
+    {
+        int Id { get; }
+
+        UserControl Page { get; }
+    }
+```
+
+`AMotor.cs`에서 `UserControl` 페이지를 반환하는 것으로 수정
+```csharp
+    public class AMotor : IMotorPage
+    {
+        public int Id { get; }
+
+        public UserControl Page { get; }
+
+        public AMotor(int id)
+        {
+            this.Id = id;
+            this.Page = new AMotorPage();
+        }
+    }
+
+    public class AMotorDriverFactory : IMotorPageFactory
+    {
+        public string DriverName => "A Motor Driver";
+
+        public IMotorPage Create(int id) => new AMotor(id);
+    }
+```
+
+`WinFormsSample`에서 버튼을 눌렀을 때 페이지를 로딩하여 화면에 보여주는 이벤트
+```csharp
+    private void button1_Click(object sender, EventArgs e)
+    {
+        var driverNames = factory.GetDriverNames();
+
+        var motor1Page = factory.Create(driverNames.First(), 1);
+        var motor2Page = factory.Create(driverNames.Last(), 2);
+
+        motor1Page.Page.Dock = DockStyle.Fill;
+        splitContainer1.Panel1.Controls.Add(motor1Page.Page);
+        motor2Page.Page.Dock = DockStyle.Fill;
+        splitContainer1.Panel2.Controls.Add(motor2Page.Page);
+    }
+```
+
+### 실행화면
+초기 페이지 로딩 전
+
+![초기 페이지 로딩 전](images/6.png)
+
+`플러그인 로딩` 버튼 클릭 후
+
+![페이지로딩 후](images/7.png)
+
+
 ## 샘플
 - 위의 예제에 대한 완전한 소스코드는 다음의 링크로 다운로드 받아 실행해 보실 수 있습니다.
   - [콘솔 예제](sample/ConsoleSample.zip)
   - [윈폼 예제](sample/WinFormsSample.zip)
+
+## 문서 기여자
+- 작성한 사람: 디모이(dimohy)
