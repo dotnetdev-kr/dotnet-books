@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace AMotorDriver
 {
-    public class AMotorDriver : IMotorDriver
+    public class AMotor : IMotor
     {
         public int Id { get; private set; }
 
-        public AMotorDriver(int id)
+        public AMotor(int id)
         {
             this.Id = id;
         }
@@ -40,6 +40,6 @@ namespace AMotorDriver
     {
         public string DriverName => "A Motor Driver";
 
-        public IMotorDriver Create(int id) => new AMotorDriver(id);
+        public IMotor Create(int id) => new AMotor(id);
     }
 }

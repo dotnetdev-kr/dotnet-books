@@ -1,19 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Loader;
+using MotorDriver;
 
-var executePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-var dllPath = Path.Combine(executePath, "Driver");
-if (Directory.Exists(dllPath) == false)
-    Directory.CreateDirectory(dllPath);
 
-Console.WriteLine(dllPath);
+var driverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Driver");
+var motorDriverFactory = new MotorFactory(driverPath);
 
-var dllFiles = Directory.GetFiles(dllPath, "*.dll");
-foreach (var dllFile in dllFiles)
-{
-    Console.WriteLine(dllFile);
-}
-var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllFiles[0]);
+foreach (var driverName in motorDriverFactory.GetDriverNames())
+    Console.WriteLine(driverName);
 
+var motor1 = motorDriverFactory.Create("A Motor Driver", 1);
+var motor2 = motorDriverFactory.Create("B Motor Driver", 2);
+
+await motor1.MoveAsync(20);
+await motor2.MoveAsync(20);

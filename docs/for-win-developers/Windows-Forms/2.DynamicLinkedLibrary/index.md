@@ -21,15 +21,15 @@
 var assembly = Assembly.LoadFrom(assemblyPath);
 ```
 
-위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadingContext`를 이용하는게 좋습니다. `AssemblyLoadingContext`를 상속받아,
+위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadContext`를 이용하는게 좋습니다. `AssemblyLoadContext`를 상속받아,
 
 ```csharp
-var assembly = myAssemblyLoadingContext.LoadFromAssemblyPath(assemblypath);
+var assembly = myAssemblyLoadContext.LoadFromAssemblyPath(assemblypath);
 ```
 
 그런다음 `assembly`를 통해 `Activator.CreateInstance(type)`등으로 클래스의 인스턴스를 생성할 수 있게 됩니다.
 
-그리고 동적 로딩한 어셈블리들을 `AssemblyLoadingContext`단위로 `Unload`를 통해 로딩을 해제 할 수 있습니다.
+그리고 동적 로딩한 어셈블리들을 `AssemblyLoadContext`단위로 `Unload`를 통해 로딩을 해제 할 수 있습니다.
 
 ```csharp
 myAssemblyLoadingContext.Unload();
@@ -51,11 +51,11 @@ myAssemblyLoadingContext.Unload();
 
 ```
    ConsoleSample - 테스트 프로그램
-   MotorDriver - IMotorDriverFactory, IMotorDriver
+   MotorDriver - MotorDriverFactory, IMotorDriverFactory, IMotor
         |
-        +- AMotorDriver
+        +- AMotorDriver - AMotorDriverFactory, AMotor
         |
-        +- BMotorDriver
+        +- BMotorDriver - BMotorDriverFactory, BMotor
 ```
 
 ```csharp
@@ -66,13 +66,13 @@ myAssemblyLoadingContext.Unload();
     {
         string DriverName { get; }
 
-        IMotorDriver Create(int id);
+        IMotor Create(int id);
     }
 
     /// <summary>
     /// MotorDriver 인터페이스
     /// </summary>
-    public interface IMotorDriver
+    public interface IMotor
     {
         int Id { get; }
 
@@ -82,14 +82,14 @@ myAssemblyLoadingContext.Unload();
     }
 ```
 
-`AMotorDriver`와 `BMotorDriver`에서 각각 `IMotorDriverFactory`, `IMotorDriver`를 구현합니다.
+`AMotorDriver`와 `BMotorDriver`에서 각각 `IMotor`, `IMotorDriverFactory`를 구현합니다.
 
 ```csharp
-    public class AMotorDriver : IMotorDriver
+    public class AMotor : IMotor
     {
         public int Id { get; private set; }
 
-        public AMotorDriver(int id)
+        public AMotor(int id)
         {
             this.Id = id;
         }
@@ -120,11 +120,11 @@ myAssemblyLoadingContext.Unload();
     {
         public string DriverName => "A Motor Driver";
 
-        public IMotorDriver Create(int id) => new AMotorDriver(id);
+        public IMotor Create(int id) => new AMotor(id);
     }
 ```
 
-BMotorDriver는 `MoveAsync(position)`에서
+BMotorDriver는 AMotorDriver에 비해 움직이는 속도가 다르다는 다음처럼 다르게 표현했습니다. `MoveAsync(position)`에서
 ```csharp
     ...
     Console.WriteLine($"{i} 퓨웅~");
@@ -132,7 +132,7 @@ BMotorDriver는 `MoveAsync(position)`에서
     ...
 ```
 
-BMotorDriverFactory에서 `DriverName`이
+그리고 드라이브명이 달라야 하므로, BMotorDriverFactory에서 `DriverName`이
 ```csharp
     public string DriverName => "B Motor Driver";
 ```
@@ -141,9 +141,77 @@ BMotorDriverFactory에서 `DriverName`이
 
 실제 모터의 구동은 모터 운동 가감속도, 영점, 상태, 기어비 등 좀 더 복잡하고 다양한 예외처리가 필요하겠지만, 구조를 표현하기 위해 기능은 구분될 정도로만 간단하게 표현했습니다.
 
+이제 `IMotorFactory`를 구현한 DLL을 읽는 `MotorFactor`를 구현해야 하는데요, 소스코드는 다음과 같습니다.
 
+```csharp
+    public class MotorFactory
+    {
+        private Dictionary<string, IMotorDriverFactory> motorFactoryMap;
+
+        public MotorFactory(string driverPath)
+        {
+            Load(driverPath);
+        }
+
+        public IMotor Create(string driverName, int id)
+        {
+            var bResult = motorFactoryMap.TryGetValue(driverName, out var motorFactory);
+            if (bResult == true)
+                return motorFactory.Create(id);
+
+            return null;
+        }
+
+        private void Load(string driverPath)
+        {
+            motorFactoryMap = new();
+
+            var motorDriverDlls = Directory.GetFiles(driverPath, "*.dll");
+            foreach (var motorDriverDll in motorDriverDlls)
+            {
+                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(motorDriverDll);
+                var factoryType = assembly.GetTypes().Where(x => typeof(IMotorDriverFactory).IsAssignableFrom(x) == true).FirstOrDefault();
+                if (factoryType == default)
+                    continue;
+
+                var factory = Activator.CreateInstance(factoryType) as IMotorDriverFactory;
+                motorFactoryMap[factory.DriverName] = factory;
+            }
+        }
+
+        public IEnumerable<string> GetDriverNames() => motorFactoryMap.Keys;
+    }
+```
+
+MotorDriverFactory는 DLL에서 `IMotorFactory`를 구현한 클래스를 찾아 인스턴스를 만들고, `Create` 메소드를 호출할 때 해당 인스턴스를 통해 해당 DLL의 모터 인스턴스를 생성해서 반환할 수 있게 됩니다.
+
+### 테스트 코드
+```csharp
+using System;
+using System.IO;
+using System.Reflection;
+using MotorDriver;
+
+
+var driverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Driver");
+var motorDriverFactory = new MotorFactory(driverPath);
+
+// 총 두개의 모터 드라이버 검색 됨
+foreach (var driverName in motorDriverFactory.GetDriverNames())
+    Console.WriteLine(driverName);
+
+// 각각의 모터 드라이버에서 모터 생성
+var motor1 = motorDriverFactory.Create("A Motor Driver", 1);
+var motor2 = motorDriverFactory.Create("B Motor Driver", 2);
+
+// 모터 이동
+await motor1.MoveAsync(20);
+await motor2.MoveAsync(20);
+```
+### 실행화면
+![실행화면](images/2.png)
 
 ## 샘플
-- 위의 예제는 아래 링크로 다운로드 받아 실행해 보실 수 있습니다.
+- 위의 예제에 대한 완전한 소스코드는 다음의 링크로 다운로드 받아 실행해 보실 수 있습니다.
   - [콘솔 예제](sample/ConsoleSample.zip)
   - [윈폼 예제](sample/WinFormsSample.zip)

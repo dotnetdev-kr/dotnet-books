@@ -10,13 +10,13 @@ namespace Driver
     {
         string DriverName { get; }
 
-        IMotorDriver Create(int id);
+        IMotor Create(int id);
     }
 
     /// <summary>
     /// MotorDriver 인터페이스
     /// </summary>
-    public interface IMotorDriver
+    public interface IMotor
     {
         int Id { get; }
 
