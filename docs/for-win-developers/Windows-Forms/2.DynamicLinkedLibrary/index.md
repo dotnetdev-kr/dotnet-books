@@ -21,7 +21,7 @@
 var assembly = Assembly.LoadFrom(assemblyPath);
 ```
 
-위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadContext`를 이용하는게 좋습니다. `AssemblyLoadContext`를 이용해 언로드 기능을 사용하기 위해 다음의 글을 참고하세요.
+위의 메소드를 이용해도 되지만 `assembly`를 언로드 할 수 없어서 `AssemblyLoadContext`를 이용하는게 좋습니다. `AssemblyLoadContext`를 이용해 언로드 기능을 사용하기 위해서는 다음의 글을 참고하면 도움이 됩니다.
 
 > [.NET Core에서 어셈블리 언로드 기능을 사용하고 디버그하는 방법](https://docs.microsoft.com/ko-kr/dotnet/standard/assembly/unloadability)
 
@@ -128,7 +128,7 @@ myAssemblyLoadingContext.Unload();
     }
 ```
 
-BMotorDriver는 AMotorDriver에 비해 움직이는 속도가 다르다는 다음처럼 다르게 표현했습니다. `MoveAsync(position)`에서
+BMotorDriver는 AMotorDriver에 비해 움직이는 속도가 다르다는 것을 다음처럼 표현했습니다. `MoveAsync(position)`에서
 ```csharp
     ...
     Console.WriteLine($"{i} 퓨웅~");
