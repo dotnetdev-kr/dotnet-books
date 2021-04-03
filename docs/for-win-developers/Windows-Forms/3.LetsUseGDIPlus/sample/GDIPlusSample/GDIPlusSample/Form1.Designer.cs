@@ -37,7 +37,7 @@ namespace GDIPlusSample
             this.canvasControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.canvasControl1.Location = new System.Drawing.Point(0, 0);
             this.canvasControl1.Name = "canvasControl1";
-            this.canvasControl1.Size = new System.Drawing.Size(450, 265);
+            this.canvasControl1.Size = new System.Drawing.Size(638, 526);
             this.canvasControl1.TabIndex = 0;
             this.canvasControl1.Text = "canvasControl1";
             // 
@@ -45,7 +45,7 @@ namespace GDIPlusSample
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(450, 265);
+            this.ClientSize = new System.Drawing.Size(638, 526);
             this.Controls.Add(this.canvasControl1);
             this.Name = "Form1";
             this.Text = "Form1";
