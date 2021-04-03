@@ -326,7 +326,7 @@ GDI+는 그릴 항목을 회전, 크기 조정, 변환등을 할 수 있도록 �
 ## 샘플
 위의 예제에 대한 샘플 소스코드는 다음의 링크로 다운로드 받아 실행해 볼 수 있습니다.
 
-- [샘플 예제](sample/GDIPlusSample.zip)
+- [샘플 소스코드](sample/GDIPlusSample.zip)
 
 ## 참고
 - [.NET Windows Forms / GitHub](https://github.com/dotnet/winforms)
