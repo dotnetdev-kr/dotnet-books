@@ -6,7 +6,7 @@
 - 스레드 / 타이머 / Task 및 비동기 키워드
 - Invoke 및 BegineInvoke
 - MDI 및 다중 폼 사용시 유용한 기술
-- (작성중)[GDI+를 사용해보자](Windows-Forms/3.LetsUseGDIPlus/index.md)
+- [GDI+를 사용해보자](Windows-Forms/3.LetsUseGDIPlus/index.md)
 - 리플렉션
 - 스마트하게 코딩 - 리팩토링
 - 컨트롤 커스터마이징 (UserControl, CustomControl, Form)
