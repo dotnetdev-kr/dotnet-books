@@ -1,5 +1,5 @@
 # GDI+를 사용해 보자
-이번 장에서는 Windows Forms에서 GDI+를 자유롭게 이용할 수 있도록 
+이번 장에서는 Windows Forms에서 GDI+를 자유롭게 이용할 수 있도록 사용법을 살펴봐 보도록 하겠습니다.
 
 ## 테스트 환경
 - Visual Studio 2019
