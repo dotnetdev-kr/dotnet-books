@@ -14,4 +14,4 @@
 - 유닛테스트 사용해보기 (xunit, nunit)
 - 디자인 타임을 사용하지 않고 윈폼 개발
 - [디자인패턴을 이용한 DLL 동적 로딩](Windows-Forms/2.DynamicLinkedLibrary/index.md)
-- StringTable (resx)를 쓰는 `다국어 지원`
+- [지역화 기능을 이용해 다국어 지원하기](Windows-Forms/4.Localizing/index.md)
