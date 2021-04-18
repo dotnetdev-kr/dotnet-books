@@ -3,8 +3,24 @@ theme:
   name: material
   custom_dir: overrides
   language: kr
+  font:
+    text: "Noto Sans KR"
   palette:
-    primary: "deep orange"
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      toggle:
+        icon: material/weather-night
+        name: 다크모드로 전환
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: 일반모드로 전환
   features:
     - navigation.sections
     - navigation.expand
@@ -36,7 +52,7 @@ plugins:
       timezone: Asia/Seoul
       locale: ko
       fallback_to_build_date: false
-  - git-authors  
+  - git-authors
   - macros
 copyright: |
   <strong>&copy; 2021 <a href="https://dotnetdev.kr/" target="_blank">.NET DEV</a>, All rights reserved.</strong>
