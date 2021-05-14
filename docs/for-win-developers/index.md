@@ -9,7 +9,7 @@
 - [GDI+를 사용해보자](Windows-Forms/3.LetsUseGDIPlus/index.md)
 - 리플렉션
 - 스마트하게 코딩 - 리팩토링
-- 컨트롤 커스터마이징 (UserControl, CustomControl, Form)
+- [컨트롤 커스터마이징 (UserControl, CustomControl, Form)](Windows-Forms/5.Customizing/index.md)
 - 열거형과 어트리뷰트를 이용한 전략패턴 만들어보기
 - 유닛테스트 사용해보기 (xunit, nunit)
 - 디자인 타임을 사용하지 않고 윈폼 개발
